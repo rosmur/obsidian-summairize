@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+main.js
+*.js.map
+
+# Development files
+.DS_Store
+.vscode/
+*.log
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+
+# IDE files
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
