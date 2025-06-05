@@ -8,9 +8,25 @@ export class ShellExecutor {
 
   static async execute(command: string): Promise<string> {
     try {
+      // Set up environment with common paths where ollama might be installed
+      const env = {
+        ...process.env,
+        PATH: [
+          process.env.PATH,
+          '/usr/local/bin',
+          '/opt/homebrew/bin',
+          '/usr/bin',
+          '/bin',
+          '/usr/sbin',
+          '/sbin',
+          process.env.HOME + '/.local/bin'
+        ].filter(Boolean).join(':')
+      };
+
       const { stdout, stderr } = await execAsync(command, {
         timeout: this.TIMEOUT,
-        maxBuffer: 1024 * 1024 // 1MB buffer
+        maxBuffer: 1024 * 1024, // 1MB buffer
+        env: env
       });
 
       if (stderr && stderr.trim()) {
@@ -31,8 +47,22 @@ export class ShellExecutor {
 
   static async checkCommand(command: string): Promise<boolean> {
     try {
-      await this.execute(`which ${command}`);
-      return true;
+      // Try multiple ways to check if command exists
+      const checks = [
+        `which ${command}`,
+        `command -v ${command}`,
+        `type ${command}`
+      ];
+      
+      for (const check of checks) {
+        try {
+          await this.execute(check);
+          return true;
+        } catch {
+          continue;
+        }
+      }
+      return false;
     } catch {
       return false;
     }
