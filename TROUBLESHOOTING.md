@@ -7,6 +7,9 @@ If you're seeing "Ollama is not available" in the plugin settings or when trying
 ### Step 1: Verify Ollama Installation
 
 1. **Check if Ollama is installed**:
+
+Run in the terminal: 
+
    ```bash
    which ollama
    # or
