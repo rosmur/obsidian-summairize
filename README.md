@@ -2,6 +2,12 @@
 
 An Obsidian plugin that generates AI-powered summaries of your notes using Ollama (with support for future AI providers like OpenAI and Anthropic).
 
+## Demo
+
+*One click and voila!*
+
+https://github.com/user-attachments/assets/facb4260-be10-45fe-a715-0bc1b1463422
+
 ## Features
 
 - 🧠 **AI-Powered Summarization**: Generate intelligent summaries of your notes
