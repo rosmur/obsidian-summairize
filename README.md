@@ -110,86 +110,16 @@ To use a different model:
 
 ## Troubleshooting
 
+Please try steps detailed [here](TROUBLESHOOTING.md) and file an issue if your problem is still unresolved. 
 ### Common Issues
 
-**"Ollama is not installed"**
-- Install Ollama from [https://ollama.ai](https://ollama.ai)
-- Ensure `ollama` command is available in your PATH
-
-**"Ollama service is not running"**
-- Start Ollama: `ollama serve`
-- Or restart the Ollama application
-
-**"Model not found"**
-- Pull the model: `ollama pull gemma3:4b`
-- Check available models: `ollama list`
-
-**"File excluded from summarization"**
-- Check if the file matches exclusion patterns in settings
-- Disable template/daily note exclusions if needed
-
-### Error Messages
-
-The plugin provides detailed error messages to help diagnose issues:
-- Installation problems
-- Model availability
-- Service connectivity
-- File validation errors
-
-## Development
-
-### Building the Plugin
-
-```bash
-npm install
-npm run dev    # Development build with watch mode
-npm run build  # Production build
-```
-
-### Project Structure
-
-```
-obsidian-summaraize/
-├── src/
-│   ├── services/          # AI providers and core logic
-│   ├── utils/             # Utility functions
-│   ├── ui/                # User interface components
-│   ├── settings/          # Plugin settings
-│   └── types/             # TypeScript definitions
-├── main.ts                # Plugin entry point
-├── manifest.json          # Plugin metadata
-└── styles.css             # Plugin styles
-```
-
-### Adding New AI Providers
-
-The plugin is designed for easy extensibility. To add a new AI provider:
-
-1. Create a new provider class implementing `AIProvider`:
-   ```typescript
-   export class NewProvider extends AIProvider {
-     async generateSummary(content: string, options: SummaryOptions): Promise<string> {
-       // Implementation
-     }
-     // ... other methods
-   }
-   ```
-
-2. Register it in `AIService`:
-   ```typescript
-   this.providers.set('newprovider', new NewProvider());
-   ```
-
-3. Update settings interface and UI
+- [Ollama is not installed](TROUBLESHOOTING.md#step-1-verify-ollama-installation)
+- [Ollama service is not running](TROUBLESHOOTING.md#step-2-check-ollama-service)
+- [Model not found](TROUBLESHOOTING.md#step-3-check-model-availability)
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
+See development details and how to contribute [here](CONTRIBUTING.md)
 ## Roadmap
 
 - [ ] Remote Model Provider integration: Anthropic, OpenAI and OpenRouter
