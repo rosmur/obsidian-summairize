@@ -1,6 +1,6 @@
 # Summairize - AI-Powered Note Summarization for Obsidian
 
-An Obsidian plugin that generates AI-powered summaries of your notes using Ollama (with support for future AI providers like OpenAI and Anthropic).
+Obsidian plugin that generates AI-powered summaries of your notes
 
 ## Demo
 
@@ -10,14 +10,14 @@ https://github.com/user-attachments/assets/facb4260-be10-45fe-a715-0bc1b1463422
 
 ## Features
 
-- 🧠 **AI-Powered Summarization**: Generate intelligent summaries of your notes
-- 🔄 **Multiple AI Providers**: Currently supports Ollama, with OpenAI and Anthropic coming soon
-- 🎯 **Smart Filtering**: Automatically excludes templates and daily notes
-- ⚙️ **Configurable**: Customize summary length, AI models, and exclusion rules
-- 📝 **Seamless Integration**: Summaries are added directly to your notes with proper formatting
-- 🚀 **Easy to Use**: One-click summarization via ribbon button or command palette
+- **Configurable**: Customize summary length, AI models, and exclusion rules
+- **Seamless**: Summaries are added directly to your notes with proper formatting
+- **Simple**: One-click summarization via ribbon button or command palette
+- **Multiple AI Providers**: Currently supports Ollama, with llama.cpp, OpenAI, Anthropic, OpenRouter etc. coming soon
 
 ## Prerequisites
+
+Local inference through ollama is the first supported method and recommended - this assures your private notes don't leave your machine.
 
 ### Ollama Installation
 
@@ -122,11 +122,12 @@ Please try steps detailed [here](TROUBLESHOOTING.md) and file an issue if your p
 See development details and how to contribute [here](CONTRIBUTING.md)
 ## Roadmap
 
-- [ ] Remote Model Provider integration: Anthropic, OpenAI and OpenRouter
+- [ ] Additional Model Server integration: llama.cpp, Anthropic, OpenAI, OpenRouter etc.
 - [ ] Custom prompt templates
 - [ ] Batch summarization by folder/rule
 - [ ] Auto summarization by folder/rule
 - [ ] Summary templates
+- [ ] Inline summary model metadata/info
 
 ## License
 
