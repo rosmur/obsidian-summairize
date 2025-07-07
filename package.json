@@ -1,6 +1,6 @@
 {
   "name": "obsidian-summairize",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "AI-powered note summarization plugin for Obsidian",
   "main": "main.js",
   "scripts": {
