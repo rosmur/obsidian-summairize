@@ -29,7 +29,7 @@ Local inference through ollama is the first supported method and recommended - t
 
 ### Manual Installation
 
-1. Download the latest release from the GitHub releases page
+1. Download the `main.js`, `manifest.json` and `styles.css` from the latest version on the GitHub releases page
 2. Extract the files to your Obsidian plugins folder: `<vault>/.obsidian/plugins/obsidian-summairize/`
 3. Enable the plugin in Obsidian Settings → Community Plugins
 
