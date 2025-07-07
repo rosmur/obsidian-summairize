@@ -1,8 +1,8 @@
-# Installation Guide for Summaraize Plugin
+# Installation Guide for Summairize Plugin
 
 ## Prerequisites
 
-Before installing the Summaraize plugin, you need to have Ollama installed and running on your system.
+Before installing the Summairize plugin, you need to have Ollama installed and running on your system.
 
 ### Install Ollama
 
@@ -38,7 +38,7 @@ Before installing the Summaraize plugin, you need to have Ollama installed and r
 
 2. **Create plugin directory**:
    ```bash
-   mkdir -p /path/to/your/vault/.obsidian/plugins/obsidian-summaraize
+   mkdir -p /path/to/your/vault/.obsidian/plugins/obsidian-summairize
    ```
 
 3. **Copy files**:
@@ -50,7 +50,7 @@ Before installing the Summaraize plugin, you need to have Ollama installed and r
 4. **Enable the plugin**:
    - Open Obsidian
    - Go to Settings → Community Plugins
-   - Find "Summaraize" in the list
+   - Find "Summairize" in the list
    - Toggle it on
 
 ### Method 2: Development Installation
@@ -60,8 +60,8 @@ If you want to build from source:
 1. **Clone the repository**:
    ```bash
    cd /path/to/your/vault/.obsidian/plugins/
-   git clone https://github.com/yourusername/obsidian-summaraize.git
-   cd obsidian-summaraize
+   git clone https://github.com/yourusername/obsidian-summairize.git
+   cd obsidian-summairize
    ```
 
 2. **Install dependencies**:
@@ -79,7 +79,7 @@ If you want to build from source:
 ## Configuration
 
 1. **Open plugin settings**:
-   - Go to Settings → Summaraize
+   - Go to Settings → Summairize
 
 2. **Configure AI provider**:
    - Ensure "Ollama" is selected as the AI provider
@@ -100,7 +100,7 @@ If you want to build from source:
 **Plugin not appearing in Community Plugins list**
 - Ensure all three files (`main.js`, `manifest.json`, `styles.css`) are in the correct directory
 - Restart Obsidian
-- Check that the plugin directory name is exactly `obsidian-summaraize`
+- Check that the plugin directory name is exactly `obsidian-summairize`
 
 **"Ollama is not installed" error**
 - Verify Ollama is installed: `which ollama`
@@ -143,4 +143,4 @@ Once installed:
 3. **Set up hotkeys** for quick access (Settings → Hotkeys → Search "Generate Summary")
 4. **Experiment with different models** by pulling them with Ollama and updating the settings
 
-Enjoy using Summaraize to enhance your note-taking workflow!
+Enjoy using Summairize to enhance your note-taking workflow!

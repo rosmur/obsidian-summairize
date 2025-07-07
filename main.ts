@@ -3,10 +3,10 @@ import { AIService } from './src/services/AIService';
 import { FileFilter } from './src/utils/FileFilter';
 import { NoteUtils } from './src/utils/NoteUtils';
 import { NotificationManager } from './src/ui/NotificationManager';
-import { SettingsManager, SummaraizeSettingTab } from './src/settings/SettingsManager';
+import { SettingsManager, SummairizeSettingTab } from './src/settings/SettingsManager';
 import { SummarySettings, DEFAULT_SETTINGS } from './src/types';
 
-export default class SummaraizePlugin extends Plugin {
+export default class SummairizePlugin extends Plugin {
   settings: SummarySettings;
   settingsManager: SettingsManager;
   aiService: AIService;
@@ -45,13 +45,13 @@ export default class SummaraizePlugin extends Plugin {
     });
 
     // Add settings tab
-    this.addSettingTab(new SummaraizeSettingTab(this.app, this));
+    this.addSettingTab(new SummairizeSettingTab(this.app, this));
 
-    console.log('Summaraize plugin loaded');
+    console.log('Summairize plugin loaded');
   }
 
   onunload() {
-    console.log('Summaraize plugin unloaded');
+    console.log('Summairize plugin unloaded');
   }
 
   async generateSummaryForActiveNote(): Promise<void> {

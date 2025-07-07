@@ -1,4 +1,4 @@
-# Troubleshooting Summaraize Plugin
+# Troubleshooting Summairize Plugin
 
 ## Common Issue: "Ollama is not available"
 
@@ -114,7 +114,7 @@ If shell commands aren't working, the plugin will try to use Ollama's HTTP API:
 
 ### Step 7: Plugin Settings
 
-1. **Open Obsidian Settings → Summaraize**
+1. **Open Obsidian Settings → Summairize**
 2. **Check Provider Status** - it should show "✅ Available" for Ollama
 3. **Click "Refresh Status"** to re-test connectivity
 4. **Verify model name** is correct (default: `gemma3:4b`)

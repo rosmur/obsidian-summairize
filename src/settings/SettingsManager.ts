@@ -1,12 +1,12 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import SummaraizePlugin from '../../main';
+import SummairizePlugin from '../../main';
 import { SummarySettings, DEFAULT_SETTINGS } from '../types';
 
 export class SettingsManager {
-  private plugin: SummaraizePlugin;
+  private plugin: SummairizePlugin;
   private settings: SummarySettings;
 
-  constructor(plugin: SummaraizePlugin) {
+  constructor(plugin: SummairizePlugin) {
     this.plugin = plugin;
     this.settings = { ...DEFAULT_SETTINGS };
   }
@@ -35,10 +35,10 @@ export class SettingsManager {
   }
 }
 
-export class SummaraizeSettingTab extends PluginSettingTab {
-  plugin: SummaraizePlugin;
+export class SummairizeSettingTab extends PluginSettingTab {
+  plugin: SummairizePlugin;
 
-  constructor(app: App, plugin: SummaraizePlugin) {
+  constructor(app: App, plugin: SummairizePlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
@@ -47,7 +47,7 @@ export class SummaraizeSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl('h2', { text: 'Summaraize Settings' });
+    containerEl.createEl('h2', { text: 'Summairize Settings' });
 
     // AI Provider Selection
     new Setting(containerEl)
