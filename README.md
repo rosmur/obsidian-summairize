@@ -1,6 +1,6 @@
 # Summairize - AI-Powered Note Summarization for Obsidian
 
-Obsidian plugin that generates AI-powered summaries of your notes
+Obsidian plugin that generates local AI-powered summaries of your notes
 
 ## Demo
 
@@ -13,7 +13,7 @@ https://github.com/user-attachments/assets/facb4260-be10-45fe-a715-0bc1b1463422
 - **Configurable**: Customize summary length, AI models, and exclusion rules
 - **Seamless**: Summaries are added directly to your notes with proper formatting
 - **Simple**: One-click summarization via ribbon button or command palette
-- **Multiple AI Providers**: Currently supports Ollama, with llama.cpp, OpenAI, Anthropic, OpenRouter etc. coming soon
+- **Multiple AI Providers**: Currently supports Ollama; with llama.cpp, LMStudio etc. coming soon.
 
 ## Prerequisites
 
@@ -122,7 +122,8 @@ Please try steps detailed [here](docs/TROUBLESHOOTING.md) and file an issue if y
 See development details and how to contribute [here](docs/CONTRIBUTING.md)
 ## Roadmap
 
-- [ ] Additional Model Server integration: llama.cpp, Anthropic, OpenAI, OpenRouter etc.
+- [ ] Additional Model Server integration: llama.cpp, LMStudio etc.
+- [ ] Remote Model provider integration (if there's demand)
 - [ ] Custom prompt templates
 - [ ] Batch summarization by folder/rule
 - [ ] Auto summarization by folder/rule
