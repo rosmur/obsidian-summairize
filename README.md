@@ -1,4 +1,4 @@
-# Summaraize - AI-Powered Note Summarization for Obsidian
+# Summairize - AI-Powered Note Summarization for Obsidian
 
 An Obsidian plugin that generates AI-powered summaries of your notes using Ollama (with support for future AI providers like OpenAI and Anthropic).
 
@@ -30,7 +30,7 @@ https://github.com/user-attachments/assets/facb4260-be10-45fe-a715-0bc1b1463422
 ### Manual Installation
 
 1. Download the latest release from the GitHub releases page
-2. Extract the files to your Obsidian plugins folder: `<vault>/.obsidian/plugins/obsidian-summaraize/`
+2. Extract the files to your Obsidian plugins folder: `<vault>/.obsidian/plugins/obsidian-summairize/`
 3. Enable the plugin in Obsidian Settings → Community Plugins
 
 ### Development Installation
@@ -38,8 +38,8 @@ https://github.com/user-attachments/assets/facb4260-be10-45fe-a715-0bc1b1463422
 1. Clone this repository into your plugins folder:
    ```bash
    cd <vault>/.obsidian/plugins/
-   git clone https://github.com/yourusername/obsidian-summaraize.git
-   cd obsidian-summaraize
+   git clone https://github.com/yourusername/obsidian-summairize.git
+   cd obsidian-summairize
    ```
 
 2. Install dependencies and build:
@@ -80,7 +80,7 @@ By default, the plugin excludes:
 
 ## Configuration
 
-Access plugin settings via Settings → Summaraize:
+Access plugin settings via Settings → Summairize:
 
 ### AI Provider Settings
 - **AI Provider**: Choose between Ollama (current) or future providers

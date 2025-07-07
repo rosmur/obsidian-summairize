@@ -11,7 +11,7 @@ npm run build  # Production build
 ## Project Structure
 
 ```
-obsidian-summaraize/
+obsidian-summairize/
 ├── src/
 │   ├── services/          # AI providers and core logic
 │   ├── utils/             # Utility functions
