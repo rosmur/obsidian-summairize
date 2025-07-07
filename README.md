@@ -110,16 +110,16 @@ To use a different model:
 
 ## Troubleshooting
 
-Please try steps detailed [here](TROUBLESHOOTING.md) and file an issue if your problem is still unresolved. 
+Please try steps detailed [here](docs/TROUBLESHOOTING.md) and file an issue if your problem is still unresolved. 
 ### Common Issues
 
-- [Ollama is not installed](TROUBLESHOOTING.md#step-1-verify-ollama-installation)
-- [Ollama service is not running](TROUBLESHOOTING.md#step-2-check-ollama-service)
-- [Model not found](TROUBLESHOOTING.md#step-3-check-model-availability)
+- [Ollama is not installed](docs/TROUBLESHOOTING.md#step-1-verify-ollama-installation)
+- [Ollama service is not running](docs/TROUBLESHOOTING.md#step-2-check-ollama-service)
+- [Model not found](docs/TROUBLESHOOTING.md#step-3-check-model-availability)
 
 ## Contributing
 
-See development details and how to contribute [here](CONTRIBUTING.md)
+See development details and how to contribute [here](docs/CONTRIBUTING.md)
 ## Roadmap
 
 - [ ] Additional Model Server integration: llama.cpp, Anthropic, OpenAI, OpenRouter etc.
