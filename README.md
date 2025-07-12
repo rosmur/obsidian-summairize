@@ -11,29 +11,29 @@ https://github.com/user-attachments/assets/facb4260-be10-45fe-a715-0bc1b1463422
 ## Features
 
 - **Configurable**: Customize summary length, AI models, and exclusion rules
-- **Seamless**: Summaries are added directly to your notes with proper formatting
-- **Simple**: One-click summarization via ribbon button or command palette
+- **Simple and Seamless**: Summaries are added directly to the top of your note
 - **Multiple AI Providers**: Currently supports Ollama; with llama.cpp, LMStudio etc. coming soon.
 
 ## Prerequisites
 
 Local inference through ollama is the first supported method and recommended - this assures your private notes don't leave your machine.
 
-### Ollama Installation
+### Ollama
 
 1. Install Ollama from [https://ollama.ai](https://ollama.ai)
 2. Pull the default model: `ollama pull gemma3:4b`
 3. Ensure Ollama is running: `ollama serve`
 
+NOTE: Gemma3:4b is a leading option for quality/size at the time of this writing. You can however use any model.
 ## Installation
 
-### Manual Installation
+### Manual
 
 1. Download the `main.js`, `manifest.json` and `styles.css` from the latest version on the GitHub releases page
 2. Extract the files to your Obsidian plugins folder: `<vault>/.obsidian/plugins/obsidian-summairize/`
 3. Enable the plugin in Obsidian Settings → Community Plugins
 
-### Development Installation
+### Development
 
 1. Clone this repository into your plugins folder:
    ```bash
@@ -56,7 +56,8 @@ Local inference through ollama is the first supported method and recommended - t
 
 1. **Ribbon Button**: Click the brain icon in the left ribbon
 2. **Command Palette**: Use `Ctrl/Cmd + P` and search for "Generate Summary"
-3. **Hotkey**: Assign a custom hotkey in Settings → Hotkeys
+
+Optionally, assign a custom hotkey in Settings → Hotkeys
 
 ### Summary Format
 
@@ -82,8 +83,7 @@ By default, the plugin excludes:
 
 Access plugin settings via Settings → Summairize:
 
-### AI Provider Settings
-- **AI Provider**: Choose between Ollama (current) or future providers
+### AI Settings
 - **Ollama Model**: Specify which Ollama model to use (default: `gemma3:4b`)
 - **Summary Length**: Target word count for summaries (100-1000 words)
 
@@ -92,21 +92,6 @@ Access plugin settings via Settings → Summairize:
 - **Template Folders**: Specify folder names to exclude
 - **Exclude Daily Notes**: Skip daily note files
 - **Daily Notes Pattern**: Regex pattern for daily note filenames
-
-### Provider Status
-- View real-time status of AI providers
-- Check if Ollama is installed and running
-- Refresh provider availability
-
-## Supported AI Models
-
-### Ollama Models
-- `gemma3:4b` (default)
-- Any other Ollama model you have installed
-
-To use a different model:
-1. Pull it with Ollama: `ollama pull <model-name>`
-2. Update the model in plugin settings
 
 ## Troubleshooting
 
@@ -117,9 +102,6 @@ Please try steps detailed [here](docs/TROUBLESHOOTING.md) and file an issue if y
 - [Ollama service is not running](docs/TROUBLESHOOTING.md#step-2-check-ollama-service)
 - [Model not found](docs/TROUBLESHOOTING.md#step-3-check-model-availability)
 
-## Contributing
-
-See development details and how to contribute [here](docs/CONTRIBUTING.md)
 ## Roadmap
 
 - [ ] Additional Model Server integration: llama.cpp, LMStudio etc.
@@ -130,6 +112,6 @@ See development details and how to contribute [here](docs/CONTRIBUTING.md)
 - [ ] Summary templates
 - [ ] Inline summary model metadata/info
 
-## License
+## Contributing
 
-MIT License - see LICENSE file for details
+See development details and how to contribute [here](docs/CONTRIBUTING.md)
