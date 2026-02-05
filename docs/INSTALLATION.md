@@ -2,31 +2,11 @@
 
 ## Prerequisites
 
-Before installing the Summairize plugin, you need to have Ollama installed and running on your system.
+Before installing the Summairize plugin, you need to have an OpenAI-compatible API endpoint available. This can be:
 
-### Install Ollama
-
-1. **Download Ollama**: Visit [https://ollama.ai](https://ollama.ai) and download the installer for your operating system.
-
-2. **Install Ollama**: Follow the installation instructions for your platform:
-   - **macOS**: Open the downloaded `.dmg` file and drag Ollama to Applications
-   - **Linux**: Run the installation script or use your package manager
-   - **Windows**: Run the installer executable
-
-3. **Start Ollama**: 
-   - **macOS/Linux**: Open terminal and run `ollama serve`
-   - **Windows**: Ollama should start automatically, or run it from the Start menu
-
-4. **Pull the default model**:
-   ```bash
-   ollama pull gemma3:4b
-   ```
-
-5. **Verify installation**:
-   ```bash
-   ollama list
-   ```
-   You should see `gemma3:4b` in the list of available models.
+- **OpenAI's official API**: Sign up at [https://platform.openai.com](https://platform.openai.com)
+- **Local inference servers**: LM Studio, llama.cpp server, vLLM, LocalAI, etc.
+- **Third-party providers**: Any service that implements the OpenAI API format
 
 ## Plugin Installation
 
@@ -44,7 +24,7 @@ Before installing the Summairize plugin, you need to have Ollama installed and r
 3. **Copy files**:
    Copy the following files to the plugin directory:
    - `main.js`
-   - `manifest.json` 
+   - `manifest.json`
    - `styles.css`
 
 4. **Enable the plugin**:
@@ -81,9 +61,10 @@ If you want to build from source:
 1. **Open plugin settings**:
    - Go to Settings → Summairize
 
-2. **Configure AI provider**:
-   - Ensure "Ollama" is selected as the AI provider
-   - Set the model to `gemma3:4b` (or your preferred model)
+2. **Configure API settings**:
+   - **API Endpoint**: Enter your API endpoint URL (default: `http://127.0.0.1:9292`)
+   - **API Key**: Enter your API key (leave empty if not required)
+   - **Model Name**: Specify the model to use (e.g., `gpt-3.5-turbo`)
 
 3. **Adjust settings**:
    - Set summary length (default: 500 words)
@@ -102,19 +83,15 @@ If you want to build from source:
 - Restart Obsidian
 - Check that the plugin directory name is exactly `obsidian-summairize`
 
-**"Ollama is not installed" error**
-- Verify Ollama is installed: `which ollama`
-- Ensure Ollama is in your PATH
-- Try restarting your terminal/Obsidian
+**"API Unavailable" error**
+- Verify your API endpoint is running and accessible
+- Test the endpoint manually: `curl http://your-endpoint/v1/models`
+- Check the API endpoint URL in plugin settings
 
-**"Ollama service is not running" error**
-- Start Ollama: `ollama serve`
-- Check if Ollama is running: `ps aux | grep ollama`
-
-**"Model not found" error**
-- Pull the model: `ollama pull gemma3:4b`
-- Check available models: `ollama list`
-- Verify the model name in plugin settings
+**Authentication errors**
+- Verify your API key is correct
+- Check if your API endpoint requires authentication
+- Ensure the API key format is correct for your provider
 
 **Build errors during development**
 - Ensure Node.js is installed (version 16+)
@@ -125,9 +102,9 @@ If you want to build from source:
 
 If you encounter issues:
 
-1. Check the plugin settings for provider status
+1. Check the plugin settings for API status
 2. Look at the browser console for error messages (Ctrl/Cmd+Shift+I)
-3. Verify Ollama is working: `ollama run gemma3:4b "Hello"`
+3. Test your API endpoint manually with curl or Postman
 4. Create an issue on the GitHub repository with:
    - Your operating system
    - Obsidian version
@@ -141,6 +118,6 @@ Once installed:
 1. **Try generating your first summary** on a note with substantial content
 2. **Explore the settings** to customize the plugin to your needs
 3. **Set up hotkeys** for quick access (Settings → Hotkeys → Search "Generate Summary")
-4. **Experiment with different models** by pulling them with Ollama and updating the settings
+4. **Experiment with different models** by updating the model name in settings
 
 Enjoy using Summairize to enhance your note-taking workflow!

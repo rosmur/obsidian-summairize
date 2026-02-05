@@ -49,31 +49,50 @@ export class SummairizeSettingTab extends PluginSettingTab {
 
     containerEl.createEl('h2', { text: 'Summairize Settings' });
 
-    // AI Provider Selection
+    // API Configuration Section
+    containerEl.createEl('h3', { text: 'API Configuration' });
+
+    // API Endpoint
     new Setting(containerEl)
-      .setName('AI Provider')
-      .setDesc('Choose the AI provider for generating summaries')
-      .addDropdown(dropdown => dropdown
-        .addOption('ollama', 'Ollama')
-        .addOption('openai', 'OpenAI (Coming Soon)')
-        .addOption('anthropic', 'Anthropic (Coming Soon)')
-        .setValue(this.plugin.settings.aiProvider)
-        .onChange(async (value: any) => {
-          await this.plugin.settingsManager.updateSetting('aiProvider', value);
+      .setName('API Endpoint')
+      .setDesc('OpenAI-compatible API endpoint URL')
+      .addText(text => text
+        .setPlaceholder('http://127.0.0.1:9292')
+        .setValue(this.plugin.settings.apiEndpoint)
+        .onChange(async (value) => {
+          await this.plugin.settingsManager.updateSetting('apiEndpoint', value);
           this.plugin.aiService.updateSettings(this.plugin.settings);
         }));
 
-    // Ollama Model
+    // API Key
     new Setting(containerEl)
-      .setName('Ollama Model')
-      .setDesc('Specify the Ollama model to use for summarization')
+      .setName('API Key')
+      .setDesc('API key for authentication (leave empty if not required)')
+      .addText(text => {
+        text
+          .setPlaceholder('sk-...')
+          .setValue(this.plugin.settings.apiKey)
+          .onChange(async (value) => {
+            await this.plugin.settingsManager.updateSetting('apiKey', value);
+            this.plugin.aiService.updateSettings(this.plugin.settings);
+          });
+        text.inputEl.type = 'password';
+      });
+
+    // Model Name
+    new Setting(containerEl)
+      .setName('Model Name')
+      .setDesc('Name of the model to use for summarization')
       .addText(text => text
-        .setPlaceholder('gemma3:4b')
-        .setValue(this.plugin.settings.ollamaModel)
+        .setPlaceholder('gpt-3.5-turbo')
+        .setValue(this.plugin.settings.modelName)
         .onChange(async (value) => {
-          await this.plugin.settingsManager.updateSetting('ollamaModel', value);
+          await this.plugin.settingsManager.updateSetting('modelName', value);
           this.plugin.aiService.updateSettings(this.plugin.settings);
         }));
+
+    // Summary Options Section
+    containerEl.createEl('h3', { text: 'Summary Options' });
 
     // Summary Length
     new Setting(containerEl)
@@ -87,6 +106,9 @@ export class SummairizeSettingTab extends PluginSettingTab {
           await this.plugin.settingsManager.updateSetting('summaryLength', value);
           this.plugin.aiService.updateSettings(this.plugin.settings);
         }));
+
+    // File Exclusion Section
+    containerEl.createEl('h3', { text: 'File Exclusions' });
 
     // Exclude Templates
     new Setting(containerEl)
@@ -136,15 +158,15 @@ export class SummairizeSettingTab extends PluginSettingTab {
         }));
 
     // Status Section
-    containerEl.createEl('h3', { text: 'Provider Status' });
-    
+    containerEl.createEl('h3', { text: 'API Status' });
+
     const statusContainer = containerEl.createDiv();
     this.updateProviderStatus(statusContainer);
 
     // Refresh button
     new Setting(containerEl)
       .setName('Refresh Status')
-      .setDesc('Check the current status of AI providers')
+      .setDesc('Check the current status of the API connection')
       .addButton(button => button
         .setButtonText('Refresh')
         .onClick(() => this.updateProviderStatus(statusContainer)));
@@ -152,23 +174,21 @@ export class SummairizeSettingTab extends PluginSettingTab {
 
   private async updateProviderStatus(container: HTMLElement): Promise<void> {
     container.empty();
-    
+
     try {
-      const status = await this.plugin.aiService.getProviderStatus();
-      
-      for (const [provider, isAvailable] of Object.entries(status)) {
-        const statusEl = container.createDiv();
-        statusEl.innerHTML = `
-          <div style="display: flex; align-items: center; margin: 8px 0;">
-            <span style="margin-right: 8px;">${provider}:</span>
-            <span style="color: ${isAvailable ? 'green' : 'red'};">
-              ${isAvailable ? '✅ Available' : '❌ Unavailable'}
-            </span>
-          </div>
-        `;
-      }
+      const isAvailable = await this.plugin.aiService.getProviderStatus();
+
+      const statusEl = container.createDiv();
+      statusEl.innerHTML = `
+        <div style="display: flex; align-items: center; margin: 8px 0;">
+          <span style="margin-right: 8px;">OpenAI Compatible API:</span>
+          <span style="color: ${isAvailable ? 'green' : 'red'};">
+            ${isAvailable ? '✅ Available' : '❌ Unavailable'}
+          </span>
+        </div>
+      `;
     } catch (error) {
-      container.innerHTML = '<div style="color: red;">Error checking provider status</div>';
+      container.innerHTML = '<div style="color: red;">Error checking API status</div>';
     }
   }
 }

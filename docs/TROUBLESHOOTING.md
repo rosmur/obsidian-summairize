@@ -1,170 +1,148 @@
 # Troubleshooting Summairize Plugin
 
-## Common Issue: "Ollama is not available"
+## Common Issue: "API is not available"
 
-If you're seeing "Ollama is not available" in the plugin settings or when trying to generate summaries, follow these steps:
+If you're seeing "API is not available" in the plugin settings or when trying to generate summaries, follow these steps:
 
-### Step 1: Verify Ollama Installation
+### Step 1: Verify API Endpoint
 
-1. **Check if Ollama is installed**:
-
-Run in the terminal: 
-
+1. **Check if your API endpoint is accessible**:
    ```bash
-   which ollama
-   # or
-   ollama --version
+   curl http://127.0.0.1:9292/v1/models
+   ```
+   Replace the URL with your actual API endpoint.
+
+2. **Verify the endpoint format**:
+   - Should be a base URL like `http://127.0.0.1:9292` or `https://api.openai.com`
+   - Do NOT include `/v1` or other path segments in the endpoint setting
+   - The plugin will automatically append `/v1/chat/completions` and `/v1/models`
+
+### Step 2: Check Authentication
+
+1. **Verify your API key** (if required):
+   - Make sure the API key is entered correctly in plugin settings
+   - Check for extra spaces or characters
+   - Some local servers don't require an API key
+
+2. **Test authentication manually**:
+   ```bash
+   curl -H "Authorization: Bearer YOUR_API_KEY" http://your-endpoint/v1/models
    ```
 
-2. **If Ollama is not found**, install it:
-   - Visit [https://ollama.ai](https://ollama.ai)
-   - Download and install for your platform
-   - Restart your terminal/Obsidian after installation
+### Step 3: Verify Model Availability
 
-### Step 2: Check Ollama Service
-
-1. **Verify Ollama is running**:
+1. **Check if your model exists**:
    ```bash
-   ollama list
+   curl -H "Authorization: Bearer YOUR_API_KEY" http://your-endpoint/v1/models
+   ```
+   This should list available models.
+
+2. **Update model name** in plugin settings if needed:
+   - For OpenAI: `gpt-3.5-turbo`, `gpt-4`, etc.
+   - For local servers: depends on your setup (e.g., `llama2`, `mistral`, etc.)
+
+### Step 4: Check Network Connectivity
+
+1. **Test basic connectivity**:
+   ```bash
+   curl http://127.0.0.1:9292
    ```
 
-2. **If you get connection errors**, start Ollama:
+2. **Check if the port is open**:
    ```bash
-   ollama serve
+   netstat -an | grep 9292
    ```
-   Keep this terminal open, or run Ollama as a background service.
+   Replace 9292 with your actual port.
 
-3. **Test the API directly**:
-   ```bash
-   curl http://localhost:11434/api/tags
-   ```
-   This should return a JSON response with available models.
+3. **Verify firewall settings**:
+   - Ensure your firewall isn't blocking the connection
+   - For local servers, make sure they're bound to the correct interface
 
-### Step 3: Check Model Availability
+### Step 5: Check Plugin Settings
 
-1. **List available models**:
-   ```bash
-   ollama list
-   ```
+1. **Open Obsidian Settings → Summairize**
+2. **Check API Status** - it should show "✅ Available"
+3. **Click "Refresh Status"** to re-test connectivity
+4. **Verify all settings**:
+   - API Endpoint URL
+   - API Key (if required)
+   - Model Name
 
-2. **If `gemma3:4b` is not listed**, pull it:
-   ```bash
-   ollama pull gemma3:4b
-   ```
+### Step 6: Debug with Browser Console
 
-3. **Test the model**:
-   ```bash
-   ollama run gemma3:4b "Hello, respond with just OK"
-   ```
-
-### Step 4: Debug Plugin Connectivity
-
-1. **Run the debug script** (from the plugin directory):
-   ```bash
-   node debug-ollama.js
-   ```
-   This will test various connectivity methods and show detailed output.
-
-2. **Check Obsidian Developer Console**:
-   - Open Obsidian
+1. **Open Obsidian Developer Console**:
    - Press `Ctrl/Cmd + Shift + I` to open developer tools
    - Go to the Console tab
    - Try using the plugin and look for error messages
 
-### Step 5: PATH Issues (Common on macOS)
+2. **Common error patterns**:
+   - Network errors: Check endpoint URL and connectivity
+   - 401/403 errors: Authentication issue with API key
+   - 404 errors: Wrong endpoint URL or model not found
+   - 500 errors: Server-side issue with your API endpoint
 
-If Ollama works in terminal but not in Obsidian:
-
-1. **Check where Ollama is installed**:
-   ```bash
-   which ollama
-   ```
-
-2. **Common locations**:
-   - `/usr/local/bin/ollama` (Intel Mac)
-   - `/opt/homebrew/bin/ollama` (Apple Silicon Mac)
-   - `/usr/bin/ollama` (Linux)
-
-3. **Create a symlink if needed**:
-   ```bash
-   # If ollama is in /opt/homebrew/bin but not found
-   sudo ln -s /opt/homebrew/bin/ollama /usr/local/bin/ollama
-   ```
-
-4. **Restart Obsidian** after making PATH changes.
-
-### Step 6: Alternative Solutions
-
-If shell commands aren't working, the plugin will try to use Ollama's HTTP API:
-
-1. **Ensure Ollama API is accessible**:
-   ```bash
-   curl -X GET http://localhost:11434/api/tags
-   ```
-
-2. **Check if port 11434 is blocked**:
-   ```bash
-   netstat -an | grep 11434
-   ```
-
-3. **Try starting Ollama with explicit host binding**:
-   ```bash
-   ollama serve --host 0.0.0.0
-   ```
-
-### Step 7: Plugin Settings
-
-1. **Open Obsidian Settings → Summairize**
-2. **Check Provider Status** - it should show "✅ Available" for Ollama
-3. **Click "Refresh Status"** to re-test connectivity
-4. **Verify model name** is correct (default: `gemma3:4b`)
-
-### Step 8: Reset Plugin
+### Step 7: Reset Plugin
 
 If all else fails:
 
 1. **Disable the plugin** in Obsidian settings
 2. **Restart Obsidian**
 3. **Re-enable the plugin**
-4. **Test again**
+4. **Re-enter your settings**
+5. **Test again**
 
 ## Error Messages and Solutions
 
-### "Command not found"
-- Ollama is not installed or not in PATH
-- Solution: Install Ollama and ensure it's in your PATH
+### "API Unavailable"
+- API endpoint is not running or not accessible
+- Solution: Start your API server or verify the endpoint URL
 
-### "Connection refused"
-- Ollama service is not running
-- Solution: Run `ollama serve`
+### "HTTP 401: Unauthorized"
+- API key is missing or incorrect
+- Solution: Verify your API key in plugin settings
 
-### "Model not found"
-- The specified model hasn't been downloaded
-- Solution: Run `ollama pull gemma3:4b`
+### "HTTP 404: Not Found"
+- Wrong endpoint URL or model doesn't exist
+- Solution: Check the endpoint URL and model name
+
+### "Model not found" or "Invalid model"
+- The specified model is not available on your API endpoint
+- Solution: Check available models and update the model name in settings
+
+### "Connection refused" or "Network error"
+- Cannot connect to the API endpoint
+- Solution: Verify the endpoint is running and accessible
 
 ### "Timeout"
-- Ollama is taking too long to respond
-- Solution: Check system resources, try a smaller model, or increase timeout
+- API is taking too long to respond
+- Solution: Check server resources or try a smaller/faster model
 
-### "Permission denied"
-- File permissions issue
-- Solution: Check Ollama installation permissions
+## Provider-Specific Tips
+
+### OpenAI Official API
+- Endpoint: Use default or `https://api.openai.com`
+- API Key: Get from [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- Models: `gpt-3.5-turbo`, `gpt-4`, `gpt-4-turbo`
+
+### Local Servers (LM Studio, llama.cpp, etc.)
+- Endpoint: Usually `http://127.0.0.1:PORT` (check your server config)
+- API Key: Often not required (leave empty)
+- Models: Depends on what you've loaded in the server
+
+### Third-Party Providers
+- Follow the provider's documentation for endpoint URL and authentication
+- Model names vary by provider
 
 ## Getting More Help
 
 If you're still having issues:
 
-1. **Run the debug script** and share the output:
-   ```bash
-   node debug-ollama.js > debug-output.txt
-   ```
-
-2. **Check Obsidian console** for JavaScript errors
-
+1. **Check API endpoint manually** with curl or Postman
+2. **Review Obsidian console** for JavaScript errors
 3. **Create an issue** on GitHub with:
    - Your operating system and version
    - Obsidian version
-   - Output from debug script
+   - API provider you're using
    - Any error messages from console
    - Steps you've already tried
 
@@ -172,9 +150,17 @@ If you're still having issues:
 
 For developers or advanced users:
 
-1. **Enable verbose logging** in the plugin code
-2. **Check network connectivity** to localhost:11434
-3. **Verify environment variables** in Obsidian vs terminal
-4. **Test with different models** to isolate model-specific issues
+1. **Test the API endpoint directly**:
+   ```bash
+   curl -X POST http://your-endpoint/v1/chat/completions \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer YOUR_API_KEY" \
+     -d '{
+       "model": "your-model-name",
+       "messages": [{"role": "user", "content": "Hello"}]
+     }'
+   ```
 
-Remember: The plugin tries multiple methods to connect to Ollama, so if one method fails, it should fall back to others. The most reliable method is usually the HTTP API.
+2. **Check CORS settings** if using a remote API
+3. **Verify SSL certificates** if using HTTPS
+4. **Review server logs** for your API endpoint

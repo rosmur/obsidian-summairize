@@ -1,6 +1,7 @@
 export interface SummarySettings {
-  aiProvider: 'ollama' | 'openai' | 'anthropic';
-  ollamaModel: string;
+  apiEndpoint: string;
+  apiKey: string;
+  modelName: string;
   summaryLength: number;
   excludeTemplates: boolean;
   excludeDailyNotes: boolean;
@@ -26,8 +27,9 @@ export interface SummaryResult {
 }
 
 export const DEFAULT_SETTINGS: SummarySettings = {
-  aiProvider: 'ollama',
-  ollamaModel: 'gemma3:4b',
+  apiEndpoint: 'http://127.0.0.1:9292',
+  apiKey: '',
+  modelName: 'gpt-3.5-turbo',
   summaryLength: 500,
   excludeTemplates: true,
   excludeDailyNotes: true,

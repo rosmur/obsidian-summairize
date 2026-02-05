@@ -13,7 +13,7 @@
     "plugin",
     "ai",
     "summarization",
-    "ollama"
+    "openai"
   ],
   "author": "Your Name",
   "license": "MIT",

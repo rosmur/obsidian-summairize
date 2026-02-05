@@ -12,19 +12,17 @@ https://github.com/user-attachments/assets/facb4260-be10-45fe-a715-0bc1b1463422
 
 - **Configurable**: Customize summary length, AI models, and exclusion rules
 - **Simple and Seamless**: Summaries are added directly to the top of your note
-- **Multiple AI Providers**: Currently supports Ollama; with llama.cpp, LMStudio etc. coming soon.
+- **OpenAI Compatible**: Works with any OpenAI-compatible API endpoint (OpenAI, local servers, etc.)
 
 ## Prerequisites
 
-Local inference through ollama is the first supported method and recommended - this assures your private notes don't leave your machine.
+This plugin requires an OpenAI-compatible API endpoint. You can use:
 
-### Ollama
+- **OpenAI's official API**: Sign up at [https://platform.openai.com](https://platform.openai.com)
+- **Local inference servers**: Such as LM Studio, llama.cpp server, vLLM, or any other OpenAI-compatible endpoint
+- **Third-party providers**: Any service that implements the OpenAI API format
 
-1. Install Ollama from [https://ollama.ai](https://ollama.ai)
-2. Pull the default model: `ollama pull gemma3:4b`
-3. Ensure Ollama is running: `ollama serve`
-
-NOTE: Gemma3:4b is a leading option for quality/size at the time of this writing. You can however use any model.
+The default configuration points to `http://127.0.0.1:9292`, which you can change in the plugin settings.
 ## Installation
 
 ### Manual
@@ -83,8 +81,12 @@ By default, the plugin excludes:
 
 Access plugin settings via Settings → Summairize:
 
-### AI Settings
-- **Ollama Model**: Specify which Ollama model to use (default: `gemma3:4b`)
+### API Configuration
+- **API Endpoint**: The base URL for your OpenAI-compatible API (default: `http://127.0.0.1:9292`)
+- **API Key**: Your API key for authentication (leave empty if not required)
+- **Model Name**: The model to use for summarization (e.g., `gpt-3.5-turbo`)
+
+### Summary Options
 - **Summary Length**: Target word count for summaries (100-1000 words)
 
 ### File Filtering
@@ -95,17 +97,15 @@ Access plugin settings via Settings → Summairize:
 
 ## Troubleshooting
 
-Please try steps detailed [here](docs/TROUBLESHOOTING.md) and file an issue if your problem is still unresolved. 
 ### Common Issues
 
-- [Ollama is not installed](docs/TROUBLESHOOTING.md#step-1-verify-ollama-installation)
-- [Ollama service is not running](docs/TROUBLESHOOTING.md#step-2-check-ollama-service)
-- [Model not found](docs/TROUBLESHOOTING.md#step-3-check-model-availability)
+- **API Unavailable**: Ensure your API endpoint is running and accessible
+- **Authentication Error**: Verify your API key is correct
+- **Model Not Found**: Check that the specified model name is available on your API endpoint
 
 ## Roadmap
 
-- [ ] Additional Model Server integration: llama.cpp, LMStudio etc.
-- [ ] Remote Model provider integration (if there's demand)
+- [ ] Model selection and management UI
 - [ ] Custom prompt templates
 - [ ] Batch summarization by folder/rule
 - [ ] Auto summarization by folder/rule
