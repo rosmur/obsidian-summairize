@@ -14,12 +14,6 @@ export interface SummaryOptions {
   model?: string;
 }
 
-export interface AIProvider {
-  generateSummary(content: string, options: SummaryOptions): Promise<string>;
-  isAvailable(): Promise<boolean>;
-  getDisplayName(): string;
-}
-
 export interface SummaryResult {
   success: boolean;
   summary?: string;

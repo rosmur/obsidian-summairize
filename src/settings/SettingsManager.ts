@@ -2,6 +2,17 @@ import { App, PluginSettingTab, Setting } from 'obsidian';
 import SummairizePlugin from '../../main';
 import { SummarySettings, DEFAULT_SETTINGS } from '../types';
 
+function debounce<T extends (...args: any[]) => any>(
+  fn: T,
+  delayMs: number
+): (...args: Parameters<T>) => void {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delayMs);
+  };
+}
+
 export class SettingsManager {
   private plugin: SummairizePlugin;
   private settings: SummarySettings;
@@ -27,7 +38,7 @@ export class SettingsManager {
   }
 
   async updateSetting<K extends keyof SummarySettings>(
-    key: K, 
+    key: K,
     value: SummarySettings[K]
   ): Promise<void> {
     this.settings[key] = value;
@@ -37,10 +48,20 @@ export class SettingsManager {
 
 export class SummairizeSettingTab extends PluginSettingTab {
   plugin: SummairizePlugin;
+  private debouncedSaveAndSync: (key: keyof SummarySettings, value: any, target: 'ai' | 'filter') => void;
 
   constructor(app: App, plugin: SummairizePlugin) {
     super(app, plugin);
     this.plugin = plugin;
+
+    this.debouncedSaveAndSync = debounce(async (key: keyof SummarySettings, value: any, target: 'ai' | 'filter') => {
+      await this.plugin.settingsManager.updateSetting(key, value);
+      if (target === 'ai') {
+        this.plugin.aiService.updateSettings(this.plugin.settings);
+      } else {
+        this.plugin.fileFilter.updateSettings(this.plugin.settings);
+      }
+    }, 500);
   }
 
   display(): void {
@@ -59,9 +80,8 @@ export class SummairizeSettingTab extends PluginSettingTab {
       .addText(text => text
         .setPlaceholder('http://127.0.0.1:9292')
         .setValue(this.plugin.settings.apiEndpoint)
-        .onChange(async (value) => {
-          await this.plugin.settingsManager.updateSetting('apiEndpoint', value);
-          this.plugin.aiService.updateSettings(this.plugin.settings);
+        .onChange((value) => {
+          this.debouncedSaveAndSync('apiEndpoint', value, 'ai');
         }));
 
     // API Key
@@ -72,9 +92,8 @@ export class SummairizeSettingTab extends PluginSettingTab {
         text
           .setPlaceholder('sk-...')
           .setValue(this.plugin.settings.apiKey)
-          .onChange(async (value) => {
-            await this.plugin.settingsManager.updateSetting('apiKey', value);
-            this.plugin.aiService.updateSettings(this.plugin.settings);
+          .onChange((value) => {
+            this.debouncedSaveAndSync('apiKey', value, 'ai');
           });
         text.inputEl.type = 'password';
       });
@@ -86,15 +105,14 @@ export class SummairizeSettingTab extends PluginSettingTab {
       .addText(text => text
         .setPlaceholder('gpt-3.5-turbo')
         .setValue(this.plugin.settings.modelName)
-        .onChange(async (value) => {
-          await this.plugin.settingsManager.updateSetting('modelName', value);
-          this.plugin.aiService.updateSettings(this.plugin.settings);
+        .onChange((value) => {
+          this.debouncedSaveAndSync('modelName', value, 'ai');
         }));
 
     // Summary Options Section
     containerEl.createEl('h3', { text: 'Summary Options' });
 
-    // Summary Length
+    // Summary Length (slider — no debounce needed, fires on release)
     new Setting(containerEl)
       .setName('Summary Length')
       .setDesc('Target word count for generated summaries')
@@ -110,7 +128,7 @@ export class SummairizeSettingTab extends PluginSettingTab {
     // File Exclusion Section
     containerEl.createEl('h3', { text: 'File Exclusions' });
 
-    // Exclude Templates
+    // Exclude Templates (toggle — no debounce needed)
     new Setting(containerEl)
       .setName('Exclude Template Files')
       .setDesc('Skip summarization for template files')
@@ -128,13 +146,12 @@ export class SummairizeSettingTab extends PluginSettingTab {
       .addText(text => text
         .setPlaceholder('Templates, templates')
         .setValue(this.plugin.settings.templateFolders.join(', '))
-        .onChange(async (value) => {
+        .onChange((value) => {
           const folders = value.split(',').map(f => f.trim()).filter(f => f);
-          await this.plugin.settingsManager.updateSetting('templateFolders', folders);
-          this.plugin.fileFilter.updateSettings(this.plugin.settings);
+          this.debouncedSaveAndSync('templateFolders', folders, 'filter');
         }));
 
-    // Exclude Daily Notes
+    // Exclude Daily Notes (toggle — no debounce needed)
     new Setting(containerEl)
       .setName('Exclude Daily Notes')
       .setDesc('Skip summarization for daily notes')
@@ -152,9 +169,8 @@ export class SummairizeSettingTab extends PluginSettingTab {
       .addText(text => text
         .setPlaceholder('\\d{4}-\\d{2}-\\d{2}')
         .setValue(this.plugin.settings.dailyNotesPattern)
-        .onChange(async (value) => {
-          await this.plugin.settingsManager.updateSetting('dailyNotesPattern', value);
-          this.plugin.fileFilter.updateSettings(this.plugin.settings);
+        .onChange((value) => {
+          this.debouncedSaveAndSync('dailyNotesPattern', value, 'filter');
         }));
 
     // Status Section
@@ -178,17 +194,15 @@ export class SummairizeSettingTab extends PluginSettingTab {
     try {
       const isAvailable = await this.plugin.aiService.getProviderStatus();
 
-      const statusEl = container.createDiv();
-      statusEl.innerHTML = `
-        <div style="display: flex; align-items: center; margin: 8px 0;">
-          <span style="margin-right: 8px;">OpenAI Compatible API:</span>
-          <span style="color: ${isAvailable ? 'green' : 'red'};">
-            ${isAvailable ? '✅ Available' : '❌ Unavailable'}
-          </span>
-        </div>
-      `;
-    } catch (error) {
-      container.innerHTML = '<div style="color: red;">Error checking API status</div>';
+      const statusEl = container.createDiv({ cls: 'summairize-status-item' });
+      statusEl.createSpan({ cls: 'summairize-provider-name', text: 'OpenAI Compatible API: ' });
+      statusEl.createSpan({
+        cls: isAvailable ? 'summairize-status-available' : 'summairize-status-unavailable',
+        text: isAvailable ? 'Available' : 'Unavailable',
+      });
+    } catch {
+      const errorEl = container.createDiv({ cls: 'summairize-status-unavailable' });
+      errorEl.setText('Error checking API status');
     }
   }
 }

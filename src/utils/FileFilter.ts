@@ -1,6 +1,11 @@
 import { TFile } from 'obsidian';
 import { SummarySettings } from '../types';
 
+export interface ExclusionResult {
+  excluded: boolean;
+  reason?: string;
+}
+
 export class FileFilter {
   private settings: SummarySettings;
 
@@ -8,52 +13,58 @@ export class FileFilter {
     this.settings = settings;
   }
 
-  isExcludedFile(file: TFile): boolean {
-    if (this.settings.excludeTemplates && this.isTemplateFile(file)) {
-      return true;
-    }
-
-    if (this.settings.excludeDailyNotes && this.isDailyNote(file)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private isTemplateFile(file: TFile): boolean {
-    const filePath = file.path;
-    
-    // Check if file is in any template folder
-    for (const templateFolder of this.settings.templateFolders) {
-      if (filePath.toLowerCase().includes(templateFolder.toLowerCase())) {
-        return true;
+  isExcludedFile(file: TFile): ExclusionResult {
+    if (this.settings.excludeTemplates) {
+      const templateReason = this.getTemplateExclusionReason(file);
+      if (templateReason) {
+        return { excluded: true, reason: templateReason };
       }
     }
 
-    // Check if filename contains "template"
-    if (file.name.toLowerCase().includes('template')) {
-      return true;
+    if (this.settings.excludeDailyNotes) {
+      const dailyNoteReason = this.getDailyNoteExclusionReason(file);
+      if (dailyNoteReason) {
+        return { excluded: true, reason: dailyNoteReason };
+      }
     }
 
-    return false;
+    return { excluded: false };
   }
 
-  private isDailyNote(file: TFile): boolean {
-    const fileName = file.basename; // filename without extension
-    const pattern = new RegExp(this.settings.dailyNotesPattern);
-    
-    // Check if filename matches daily note pattern
-    if (pattern.test(fileName)) {
-      return true;
+  private getTemplateExclusionReason(file: TFile): string | null {
+    const filePath = file.path.toLowerCase();
+
+    for (const templateFolder of this.settings.templateFolders) {
+      if (filePath.includes(templateFolder.toLowerCase())) {
+        return `File is in template folder: ${templateFolder}`;
+      }
     }
 
-    // Check if file is in a "Daily Notes" folder
+    if (file.name.toLowerCase().includes('template')) {
+      return 'Filename contains "template"';
+    }
+
+    return null;
+  }
+
+  private getDailyNoteExclusionReason(file: TFile): string | null {
+    const fileName = file.basename;
+
+    try {
+      const pattern = new RegExp(this.settings.dailyNotesPattern);
+      if (pattern.test(fileName)) {
+        return 'File matches daily note pattern';
+      }
+    } catch {
+      // Invalid regex — skip pattern matching rather than crashing
+    }
+
     const filePath = file.path.toLowerCase();
     if (filePath.includes('daily notes') || filePath.includes('dailynotes')) {
-      return true;
+      return 'File is in daily notes folder';
     }
 
-    return false;
+    return null;
   }
 
   updateSettings(settings: SummarySettings): void {

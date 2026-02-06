@@ -1,16 +1,17 @@
-import { App, Editor, MarkdownView, MarkdownFileInfo, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
+import { Editor, MarkdownView, MarkdownFileInfo, Plugin } from 'obsidian';
 import { AIService } from './src/services/AIService';
 import { FileFilter } from './src/utils/FileFilter';
 import { NoteUtils } from './src/utils/NoteUtils';
 import { NotificationManager } from './src/ui/NotificationManager';
 import { SettingsManager, SummairizeSettingTab } from './src/settings/SettingsManager';
-import { SummarySettings, DEFAULT_SETTINGS } from './src/types';
+import { SummarySettings } from './src/types';
 
 export default class SummairizePlugin extends Plugin {
   settings: SummarySettings;
   settingsManager: SettingsManager;
   aiService: AIService;
   fileFilter: FileFilter;
+  private isGenerating = false;
 
   async onload() {
     // Initialize settings manager
@@ -46,39 +47,43 @@ export default class SummairizePlugin extends Plugin {
 
     // Add settings tab
     this.addSettingTab(new SummairizeSettingTab(this.app, this));
-
-    console.log('Summairize plugin loaded');
   }
 
   onunload() {
-    console.log('Summairize plugin unloaded');
+    // Plugin cleanup
   }
 
   async generateSummaryForActiveNote(): Promise<void> {
+    if (this.isGenerating) {
+      NotificationManager.showWarning('Summary generation already in progress');
+      return;
+    }
+
     const activeFile = this.app.workspace.getActiveFile();
-    
+
     if (!activeFile) {
       NotificationManager.showError('No active note found');
       return;
     }
 
-    // Check if file should be excluded
-    if (this.fileFilter.isExcludedFile(activeFile)) {
-      const reason = this.getExclusionReason(activeFile);
-      NotificationManager.showFileExcluded(reason);
+    // Check if file should be excluded — reason comes from FileFilter directly
+    const exclusion = this.fileFilter.isExcludedFile(activeFile);
+    if (exclusion.excluded) {
+      NotificationManager.showFileExcluded(exclusion.reason || 'File is excluded by current settings');
       return;
     }
 
     // Show loading notification
     const loadingNotice = NotificationManager.showLoading();
+    this.isGenerating = true;
 
     try {
       // Read file content
       const content = await this.app.vault.read(activeFile);
-      
+
       // Generate summary
       const result = await this.aiService.generateSummary(content);
-      
+
       // Dismiss loading notification
       NotificationManager.dismissNotice(loadingNotice);
 
@@ -86,7 +91,7 @@ export default class SummairizePlugin extends Plugin {
         // Insert summary into note
         const updatedContent = NoteUtils.insertSummary(content, result.summary);
         await this.app.vault.modify(activeFile, updatedContent);
-        
+
         // Show success notification
         const wordCount = result.summary.split(/\s+/).length;
         NotificationManager.showSummarySuccess(wordCount);
@@ -96,35 +101,9 @@ export default class SummairizePlugin extends Plugin {
     } catch (error: any) {
       NotificationManager.dismissNotice(loadingNotice);
       NotificationManager.showSummaryError(error.message || 'Unexpected error occurred');
+    } finally {
+      this.isGenerating = false;
     }
-  }
-
-  private getExclusionReason(file: TFile): string {
-    if (this.settings.excludeTemplates) {
-      const filePath = file.path.toLowerCase();
-      for (const templateFolder of this.settings.templateFolders) {
-        if (filePath.includes(templateFolder.toLowerCase())) {
-          return `File is in template folder: ${templateFolder}`;
-        }
-      }
-      if (file.name.toLowerCase().includes('template')) {
-        return 'Filename contains "template"';
-      }
-    }
-
-    if (this.settings.excludeDailyNotes) {
-      const fileName = file.basename;
-      const pattern = new RegExp(this.settings.dailyNotesPattern);
-      if (pattern.test(fileName)) {
-        return 'File matches daily note pattern';
-      }
-      const filePath = file.path.toLowerCase();
-      if (filePath.includes('daily notes') || filePath.includes('dailynotes')) {
-        return 'File is in daily notes folder';
-      }
-    }
-
-    return 'File is excluded by current settings';
   }
 
   async loadSettings(): Promise<SummarySettings> {
